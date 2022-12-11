@@ -124,5 +124,58 @@ class Generator:
 
 
 
-    def generate_atmosphere_composition(self):
-        pass
+    def generate_atmosphere_data(self, Planet_object):
+        # - chemical composition
+        # - atmosphere height
+        # - pressure
+
+
+        planet_radius = Planet_object.radius
+        planet_mass = Planet_object.mass
+        planet_type = Planet_object.type
+        planet_gravity = Planet_object.gravity
+        planet_has_atmosphere = Planet_object.has_atmosphere
+        random.seed(Planet_object.seed)
+
+        def generate_atmospheric_composition(seed):
+
+            pass
+
+        def atmosphere_height(radius: float, mass: float, pressure: float, density: float):
+            # Constants
+            A = 1.5e-8  # unitless
+            B = 0.5  # unitless
+            C = 4.5e-4  # unitless
+            D = 3e-3  # unitless
+
+            # Calculate the atmosphere height
+            height = A * radius * mass ** B + C * radius * pressure ** 0.25 + D * radius * density ** 0.25
+
+            # Return the atmosphere height
+            return height
+
+        def max_atmospheric_pressure(mass: float, gravity: float, atmosphere_composition: dict):
+            # Constants
+            R = 8.3144598  # in m^3 * Pa / mol / K
+            T = 288.15  # in K
+            M = 0  # in kg/mol
+
+            # Calculate the molecular weight of the atmosphere
+            for key in atmosphere_composition:
+                M += atmosphere_composition[key] * atomic_masses[key]  # in kg/mol
+
+            # Calculate the maximum atmospheric pressure
+            pressure = (R * T * M) / (gravity * M_earth)  # in Pa
+
+            # Return the maximum atmospheric pressure
+            return pressure
+
+        if planet_has_atmosphere:
+            # generate atmospheric data
+            pass
+        else:
+            # fill atmospheric data with n/a and 0's
+            pass
+
+
+

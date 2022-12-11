@@ -12,7 +12,7 @@ Back = COLOR.Back
 
 class Core:
     def __init__(self):
-        self.planet_data_file_name = 'planet_data.json'
+        self.planet_data_file_name = 'data/planet_data.json'
         self.Serializer = Serializer()
         self.Generator = Generator()
         self.Calculate = Calculate()

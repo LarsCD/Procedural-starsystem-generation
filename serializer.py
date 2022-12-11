@@ -7,7 +7,7 @@ class Serializer:
     def load_config(self):
         print('> Loading config_data from \'config.json\'')
         try:
-            with open('config.json', 'r') as file:
+            with open('data/config.json', 'r') as file:
                 data = json.load(file)
             return data
         except Exception as e:

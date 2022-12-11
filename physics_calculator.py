@@ -2,8 +2,9 @@ import math
 
 class Constants:
     def __init__(self):
-        self.G = (6.6743*math.pow(10, -11))
+        self.G = 6.6743e-11
         self.earth_g = 9.81
+        self.L_avogadro = 6.0221408e23
 
 class Calculate:
     def __init__(self):
@@ -26,3 +27,4 @@ class Calculate:
     def g(self, gravity):
         g = gravity/self.Constants.earth_g
         return g
+
