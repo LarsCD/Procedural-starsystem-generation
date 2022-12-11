@@ -2,17 +2,26 @@ import random
 from physics_calculator import Calculate
 
 # for planetary data: https://elite-dangerous.fandom.com/wiki/Planets
+# atmospheric data: https://en.wikipedia.org/wiki/Extraterrestrial_atmosphere
 
-class Planetary_object:
-    def __init__(self,name,type,type_name,mass,radius,has_atmosphere,has_ring,spawn_chance):
+class Planet:
+    def __init__(self,name,type,type_name,mass,gravity,g,radius,has_atmosphere,has_ring,spawn_chance):
         self.name = name
         self.type = type
         self.type_name = type_name
         self.mass = mass
+        self.gravity = gravity
+        self.g = g
         self.radius = radius
         self.has_atmosphere = has_atmosphere
         self.has_ring = has_ring
         self.spawn_chance = spawn_chance
+
+
+class Atmosphere:
+    def __init__(self,has_atmosphere):
+        self.has_atmosphere = has_atmosphere
+
 
 
 class Generator:
@@ -93,7 +102,9 @@ class Generator:
             has_ring = True
         else:
             has_ring = False
-        mass = round(self.Calculate.mass(radius * 1000, density * 1000), 3)
+        mass = round((self.Calculate.mass(radius * 1000, density * 1000)), 3)
+        gravity = round((self.Calculate.gravity(mass, radius*1000)), 2)
+        g = round(self.Calculate.g(gravity), 2)
 
         name = generated_planet['name']
         type = generated_planet['type']
@@ -107,7 +118,11 @@ class Generator:
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
 
         # give attributes to planet
-        completed_planet_object = Planetary_object(name, type, type_name, mass, radius, has_atmosphere, has_ring,
+        completed_planet_object = Planet(name, type, type_name, mass, gravity, g, radius, has_atmosphere, has_ring,
                                                    spawn_chance)
-        print(completed_planet_object)
         return completed_planet_object
+
+
+
+    def generate_atmosphere_composition(self):
+        pass

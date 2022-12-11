@@ -9,13 +9,13 @@
         "type_name": "Terrestrial planet",
         "type": "terrestrial_planet",
         "radius_indicator": [100, 30000],
-        "density_indicator": [1.55, 1.75],
+        "density_indicator": [1.2, 1.6],
         "has_atmosphere_chance": 30.0,
         "has_ring_chance": 30.0,
         "spawn_rate": 40.0
       },
       "full_rocky_body": {
-        "name": "Full Rocky body",
+        "name": "Earth sized Rocky body",
         "type_name": "Terrestrial planet",
         "type": "terrestrial_planet",
         "radius_indicator": [2500, 10000],
@@ -68,21 +68,21 @@
       }
     },
     "dwarf_planet": {
-      "ice_dwarf": {
-        "name": "Ice dwarf",
+      "icy_dwarf": {
+        "name": "Icy dwarf",
         "type_name": "Dwarf planet",
         "type": "dwarf_planet",
-        "radius_indicator": [420, 1840],
+        "radius_indicator": [420, 1500],
         "density_indicator": [1.8, 2.5],
         "has_atmosphere_chance": 10.0,
-        "has_ring_chance": 5.0,
+        "has_ring_chance": 0.0,
         "spawn_rate": 30.0
       },
       "rocky_dwarf": {
         "name": "Rocky dwarf",
         "type_name": "Dwarf planet",
         "type": "dwarf_planet",
-        "radius_indicator": [420 , 1840],
+        "radius_indicator": [420 , 1500],
         "density_indicator": [5.5, 6.0],
         "has_atmosphere_chance": 10.0,
         "has_ring_chance": 0.0,

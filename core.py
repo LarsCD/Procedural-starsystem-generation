@@ -3,6 +3,11 @@ from generator import Generator
 from physics_calculator import Calculate
 import json
 import random
+from GUT import GUT, COLOR
+import os
+os.system("")
+Fore = COLOR.Fore
+Back = COLOR.Back
 
 
 class Core:
@@ -17,17 +22,21 @@ class Core:
     def update_game(self):
         print('run')
         click = input('[enter] to start generation')
-        for i in range(10):
-            seed = int(round((i+1)*(i*12)))
-            planetary_body = self.generate_planetary_body(seed, planetary_body_type='dwarf_planet')
-            print(f"Name: {planetary_body.name}")
-            print(f"Type: {planetary_body.type}")
-            print(f"Mass: {planetary_body.mass} kg")
-            print(f"Radius: {planetary_body.radius} km")
+        for i in range(10000):
+            seed = int(round((i+1)))
+            planetary_body = self.generate_planetary_body(
+                seed,
+            )
+            print(f"Name:           {Fore.GREEN()}{planetary_body.name}{Fore.RESET()}")
+            print(f"Type:           {Fore.B_BLUE()}{planetary_body.type_name}{Fore.RESET()}")
+            print(f"Mass:           {planetary_body.mass} kg")
+            print(f'Gravity:        {planetary_body.gravity} m/s')
+            print(f'g:              {planetary_body.g} g')
+            print(f"Radius:         {planetary_body.radius} km")
             print(f"Has atmosphere: {planetary_body.has_atmosphere}")
-            print(f"Has ring: {planetary_body.has_ring}")
-            print(f"Spawn Chance: {planetary_body.spawn_chance}%")
-            print(f"Seed: {seed}")
+            print(f"Has ring:       {planetary_body.has_ring}")
+            print(f"Spawn Chance:   {planetary_body.spawn_chance}%")
+            print(f"Seed:           ({seed})")
             print('\n')
         print('success')
         click = input('[enter] to quit')
