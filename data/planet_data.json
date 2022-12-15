@@ -20,7 +20,7 @@
         "type": "terrestrial_planet",
         "radius_indicator": [2500, 10000],
         "density_indicator": [5.30, 5.80],
-        "has_atmosphere_chance": 30.0,
+        "has_atmosphere_chance": 90.0,
         "has_ring_chance": 10.0,
         "spawn_rate": 25.0
       },
@@ -30,7 +30,7 @@
         "type": "terrestrial_planet",
         "radius_indicator": [1500, 2500],
         "density_indicator": [5.30, 5.80],
-        "has_atmosphere_chance": 5.0,
+        "has_atmosphere_chance": 45.0,
         "has_ring_chance": 5.0,
         "spawn_rate": 25.0
       },
@@ -40,7 +40,7 @@
         "type": "terrestrial_planet",
         "radius_indicator": [1000, 1500],
         "density_indicator": [5.80, 6.30],
-        "has_atmosphere_chance": 2.0,
+        "has_atmosphere_chance": 10.0,
         "has_ring_chance": 0.0,
         "spawn_rate": 10.0
       }
@@ -74,7 +74,7 @@
         "type": "dwarf_planet",
         "radius_indicator": [420, 1500],
         "density_indicator": [1.8, 2.5],
-        "has_atmosphere_chance": 10.0,
+        "has_atmosphere_chance": 2.0,
         "has_ring_chance": 0.0,
         "spawn_rate": 30.0
       },
@@ -84,7 +84,7 @@
         "type": "dwarf_planet",
         "radius_indicator": [420 , 1500],
         "density_indicator": [5.5, 6.0],
-        "has_atmosphere_chance": 10.0,
+        "has_atmosphere_chance": 2.0,
         "has_ring_chance": 0.0,
         "spawn_rate": 70.0
       }

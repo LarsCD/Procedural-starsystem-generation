@@ -1,34 +1,31 @@
 import random
-from physics_calculator import Calculate
+from physics_calculator import Calculate, Constants
+import math
 
 # for planetary data: https://elite-dangerous.fandom.com/wiki/Planets
 # atmospheric data: https://en.wikipedia.org/wiki/Extraterrestrial_atmosphere
 
 class Planet:
-    def __init__(self,name,type,type_name,mass,gravity,g,radius,has_atmosphere,has_ring,spawn_chance):
-        self.name = name
+    def __init__(self,type,_class,type_name,mass,density,gravity,g,radius,atmospheric_data,has_ring,spawn_chance):
         self.type = type
+        self._class = _class
         self.type_name = type_name
         self.mass = mass
+        self.density = density
         self.gravity = gravity
         self.g = g
         self.radius = radius
-        self.has_atmosphere = has_atmosphere
+        self.atmospheric_data = atmospheric_data
         self.has_ring = has_ring
         self.spawn_chance = spawn_chance
-
-
-class Atmosphere:
-    def __init__(self,has_atmosphere):
-        self.has_atmosphere = has_atmosphere
-
 
 
 class Generator:
     def __init__(self):
         self.Calculate = Calculate()
+        self.Constants = Constants()
 
-    def generate_planet(self, planetary_data, meta_data, seed, planetary_body_type=None, planetary_body_class=None):
+    def generate_planet(self, static_planetary_data, static_atmosphere_data, planetary_meta_data, seed, planetary_body_type=None, planetary_body_class=None):
         # variables
         class_weights_list = []
 
@@ -45,30 +42,30 @@ class Generator:
         if planetary_body_type is None and planetary_body_class is None:
             # get planetary_body_type based on spawn rate
             planetary_body_type = random.choices(
-                list(planetary_data.keys()),
-                weights=meta_data['spawn_rate_weights'])
+                list(static_planetary_data.keys()),
+                weights=planetary_meta_data['spawn_rate_weights'])
 
             # make list of weights based on planetary_body_type spawn rate
-            for object in planetary_data[planetary_body_type[0]].values():
+            for object in static_planetary_data[planetary_body_type[0]].values():
                 weight = object['spawn_rate']
                 class_weights_list.append(weight)
 
             # get planetary_body_class based on planetary_body_type spawn rate
             planetary_body_class = random.choices(
-                list(planetary_data[planetary_body_type[0]]),
+                list(static_planetary_data[planetary_body_type[0]]),
                 weights=class_weights_list)
 
         # if planetary_body_type is provided but planetary_body_class is not,
         # generate random planetary body class for the given type
         elif planetary_body_type is not None and planetary_body_class is None:
             # make list of weights based on planetary_body_type spawn rate
-            for object in planetary_data[planetary_body_type].values():
+            for object in static_planetary_data[planetary_body_type].values():
                 weight = object['spawn_rate']
                 class_weights_list.append(weight)
 
             # get planetary_body_class based on planetary_body_type spawn rate
             planetary_body_class = random.choices(
-                list(planetary_data[planetary_body_type]),
+                list(static_planetary_data[planetary_body_type]),
                 weights=class_weights_list)
 
         # if both planetary_body_type and planetary_body_class are provided,
@@ -86,7 +83,7 @@ class Generator:
             planetary_body_class = [planetary_body_class]
 
         # get planetary body data
-        generated_planet = planetary_data[planetary_body_type[0]][planetary_body_class[0]]
+        generated_planet = static_planetary_data[planetary_body_type[0]][planetary_body_class[0]]
 
         # decorated_planet becomes placeholder to recieve randomly generated attributes
         decorated_planet = generated_planet
@@ -111,71 +108,148 @@ class Generator:
         type_name = generated_planet['type_name']
 
         # calculate spawn chance
-        planetary_body_index = list(planetary_data.keys()).index(planetary_body_type[0])
-        spawn_chance_type = meta_data['spawn_rate_weights'][planetary_body_index]
+        planetary_body_index = list(static_planetary_data.keys()).index(planetary_body_type[0])
+        spawn_chance_type = planetary_meta_data['spawn_rate_weights'][planetary_body_index]
         spawn_chance_class = generated_planet['spawn_rate']
+
+        ring_spawn_chance = 1
+
+        if has_atmosphere:
+            ring_spawn_chance = generated_planet['has_ring_chance']
 
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
 
+        # generate atmosphere data (temperature = 293 K)
+        atmospheric_data = self.generate_atmospheric_data(static_atmosphere_data, radius, mass, type, gravity, has_atmosphere, seed)
+
         # give attributes to planet
-        completed_planet_object = Planet(name, type, type_name, mass, gravity, g, radius, has_atmosphere, has_ring,
+        completed_planet_object = Planet(name, type, type_name, mass, density, gravity, g, radius, atmospheric_data, has_ring,
                                                    spawn_chance)
         return completed_planet_object
 
 
 
-    def generate_atmosphere_data(self, Planet_object):
+    def generate_atmospheric_data(self, static_compound_data, radius, mass, type, gravity, has_atmosphere, seed, temperature=293.0):
         # - chemical composition
         # - atmosphere height
         # - pressure
 
+        # general variables
+        compound_data = static_compound_data['compounds']
+        elements = static_compound_data['elements']
 
-        planet_radius = Planet_object.radius
-        planet_mass = Planet_object.mass
-        planet_type = Planet_object.type
-        planet_gravity = Planet_object.gravity
-        planet_has_atmosphere = Planet_object.has_atmosphere
-        random.seed(Planet_object.seed)
 
-        def generate_atmospheric_composition(seed):
+        # planetary varaiables
 
-            pass
+        planet_has_atmosphere = has_atmosphere
+        planet_radius = radius
+        planet_mass = mass
+        planet_type = type
+        planet_gravity = gravity
+        planet_temperature = temperature
+        random.seed(seed)
 
-        def atmosphere_height(radius: float, mass: float, pressure: float, density: float):
-            # Constants
-            A = 1.5e-8  # unitless
-            B = 0.5  # unitless
-            C = 4.5e-4  # unitless
-            D = 3e-3  # unitless
+        def generate_atmospheric_composition(static_compound_data):
+            # variables
+            static_compounds = static_compound_data['compounds']
+            atmosphere_composition = []
+            atmospheric_compounds_percentages = {}
+            atmospheric_compounds_atomic_weights = {}
 
-            # Calculate the atmosphere height
-            height = A * radius * mass ** B + C * radius * pressure ** 0.25 + D * radius * density ** 0.25
+            # generate random list of compounds comprising the atmosphere
+            compound_choice_num = random.randint(2, len(static_compounds))
+            compound_list = random.sample(sorted(static_compounds), compound_choice_num)
 
-            # Return the atmosphere height
-            return height
+            # Assign a random percentage to each selected chemical compound and normalize percentages
+            total_percentage = 0
+            for key in compound_list:
+                # Generate a random percentage
+                percentage = random.uniform(0, 100 - total_percentage)
+                # Add the percentage to the dictionary of compounds and their percentages
+                atmospheric_compounds_percentages[key] = percentage
+                total_percentage += round(percentage, 2)
+            # Check if the sum of the percentages is less than 100
+            if total_percentage < 100:
+                # Calculate the difference between 100 and the current total percentage
+                difference = 100 - total_percentage
+                # Assign the difference to the last element in the compound_list
+                atmospheric_compounds_percentages[compound_list[-1]] += round(difference, 2)
+            # Check if the sum of the percentages is more than 100
+            elif total_percentage > 100:
+                # Calculate the difference between the current total percentage and 100
+                difference = total_percentage - 100
+                # Subtract the difference from the last element in the compound_list
+                atmospheric_compounds_percentages[compound_list[-1]] -= round(difference, 2)
 
-        def max_atmospheric_pressure(mass: float, gravity: float, atmosphere_composition: dict):
-            # Constants
-            R = 8.3144598  # in m^3 * Pa / mol / K
-            T = 288.15  # in K
-            M = 0  # in kg/mol
+            # add atomic weight to each selected chemical compound
+            for key in compound_list:
+                atmospheric_compounds_atomic_weights[key] = static_compounds[key]
 
+            # add percentage dict and atomic weight list to atmospheric_composition
+            atmosphere_composition.append(atmospheric_compounds_percentages)
+            atmosphere_composition.append(atmospheric_compounds_atomic_weights)
+
+            # Return atmospheric_composition dictionary
+            return atmosphere_composition
+
+        def calculate_atmospheric_height(radius: float, mass: float):
+            A = 0.00485
+            atmospheric_height = radius*A
+            return atmospheric_height
+
+        def calculate_atmospheric_volume(radius: float, height: float):
+            # function returns the volume of a planet's atmosphere
+            outer_radius = (radius*1000+height*1000)
+            inner_radius = radius*1000
+            volume = (4 / 3 * math.pi * (outer_radius ** 3 - inner_radius ** 3))/1000000000
+            return volume
+
+        def calculate_atmospheric_mass(atmosphere_volume: float, atmospheric_composition: dict):
+            mol_mass = 0
             # Calculate the molecular weight of the atmosphere
-            for key in atmosphere_composition:
-                M += atmosphere_composition[key] * atomic_masses[key]  # in kg/mol
+            for key in atmospheric_composition[0]:
+                mol_mass += (atmospheric_composition[0][key] / 100) * atmospheric_composition[1][key]  # in kg/mol
+            atmosphere_mass = (mol_mass*atmosphere_volume)
+            return atmosphere_mass
+
+        def calculate_atmospheric_pressure(temperature: float, gravity: float, atmospheric_mass: dict):
 
             # Calculate the maximum atmospheric pressure
-            pressure = (R * T * M) / (gravity * M_earth)  # in Pa
+            pressure = self.Calculate.average_atmospheric_persure(temperature, gravity, atmospheric_mass)/10000  # in Pa
 
             # Return the maximum atmospheric pressure
             return pressure
 
         if planet_has_atmosphere:
             # generate atmospheric data
-            pass
+            atmospheric_composition = generate_atmospheric_composition(static_compound_data)
+            atmospheric_height = calculate_atmospheric_height(planet_radius, planet_mass)
+            atmospheric_volume = calculate_atmospheric_volume(planet_radius, atmospheric_height)
+            atmospheric_mass = calculate_atmospheric_mass(atmospheric_volume, atmospheric_composition)
+            atmospheric_pressure = calculate_atmospheric_pressure(planet_temperature, planet_gravity, atmospheric_mass)
+            atmospheric_pressure_hPa = atmospheric_pressure/100000
+
+
         else:
             # fill atmospheric data with n/a and 0's
-            pass
+            atmospheric_composition = 'n/a'
+            atmospheric_height = 0.0
+            atmospheric_volume = 'n/a'
+            atmospheric_mass = 'n/a'
+            atmospheric_pressure = 0.000
+            atmospheric_pressure_hPa = 0.000
+
+        complete_atmospheric_data = {
+            'has_atmosphere': has_atmosphere,
+            'atmospheric_temperature': temperature,
+            'atmospheric_composition': atmospheric_composition,
+            'atmosphere_height': atmospheric_height,
+            'atmospheric_pressure': atmospheric_pressure,
+            'atmospheric_pressure_hPa': atmospheric_pressure_hPa,
+        }
+        return complete_atmospheric_data
+
+
 
 
 

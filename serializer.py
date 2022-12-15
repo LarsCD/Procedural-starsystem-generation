@@ -1,27 +1,44 @@
 import json
+import traceback
 
 class Serializer:
     def __init__(self):
         pass
 
     def load_config(self):
+        data = None
         print('> Loading config_data from \'config.json\'')
         try:
             with open('data/config.json', 'r') as file:
                 data = json.load(file)
-            return data
-        except Exception as e:
-            print(f'> ERROR: Failure loading config_data from \'config.json\'')
+        except Exception:
+            print(f'> ERROR: Failure loading config_data from \'config.json\'\n> {traceback.print_exc()}')
         else:
             print(f'> Successfully loaded config_data from \'config.json\'')
+        return data
+
 
     def load_planet_data(self, filename):
+        data = None
         print(f'> Loading planetary data from \'{filename}\'')
         try:
             with open(filename, 'r') as file:
                 data = json.load(file)
-            return data
-        except Exception as e:
-            print(f'> ERROR: Failure loading planet_data from \'{filename}\'')
+        except Exception:
+            print(f'> ERROR: Failure loading planet_data from \'{filename}\'\n> {traceback.print_exc()}')
         else:
             print(f'> Successfully loaded planet_data from \'{filename}\'')
+        return data
+
+
+    def load_compound_data(self, filename):
+        data = None
+        print(f'> Loading compound data from \'{filename}\'')
+        try:
+            with open(filename, 'r') as file:
+                data = json.load(file)
+        except Exception:
+            print(f'> ERROR: Failure loading compound_data from \'{filename}\'\n> {traceback.print_exc()}')
+        else:
+            print(f'> Successfully loaded compound_data from \'{filename}\'')
+        return data
