@@ -4,10 +4,12 @@ class Constants:
     def __init__(self):
         self.G = 6.6743e-11
         self.earth_g = 9.81             # m/s^2
-        self.L_avogadro = 6.0221408e23
+        self.L_avogadro = 6.0221408e23  #
         self.R_gas = 8.3144598          # J/mol k
-        self.C = 299_792_458    # m/s
-        self.AU = 149_597_871   # km
+        self.C = 299_792_458            # m/s
+        self.AU = 149_597_871           # km
+        self.earth_mass = 5.97219e24    # kg
+        self.solar_mass = 1.9891e30     # kg
 
 class Calculate:
     def __init__(self):

@@ -17,6 +17,7 @@ class Core:
         # filenames
         self.planet_data_filename = 'data/planet_data.json'
         self.compound_data_filename = 'data/compound_data.json'
+        self.stellar_data_filename = 'data/stellar_data.json'
         # load components
         self.Serializer = Serializer()
         self.Generator = Generator()
@@ -25,15 +26,19 @@ class Core:
         self.static_planet_data = {}
         self.static_compound_data = {}
 
+
     def load_data(self):
         self.static_planet_data = self.Serializer.load_planet_data(self.planet_data_filename)
         self.static_compound_data = self.Serializer.load_compound_data(self.compound_data_filename)
+        self.static_stellar_data = self.Serializer.load_stellar_data(self.stellar_data_filename)
 
 
     def update_game(self):
         self.load_data()
         print('run')
         click = input('[enter] to start generation')
+        object = self.generate_star(10000)
+        print(object)
         universe_data = []
         gen_range = 5
         print(f'> Generating {gen_range} planetary bodies...')
@@ -77,3 +82,15 @@ class Core:
             planetary_body_class=planetary_body_class
         )
         return planetary_object
+
+    def generate_star(self, seed, stellar_type=None, stellar_class=None):
+        primary_data = self.static_stellar_data
+        stellar_data, meta_data = primary_data['stellar_data'], primary_data['meta_data']
+        stellar_object = self.Generator.generate_star(
+            stellar_data,
+            meta_data,
+            seed,
+            stellar_type=stellar_type,
+            stellar_class=stellar_class
+        )
+        return stellar_object

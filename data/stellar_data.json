@@ -1,0 +1,271 @@
+{
+  "meta_data": {
+    "spawn_rate_weights": [77.0, 3.24, 0.36, 15.0, 4.0, 0.4]
+  },
+  "stellar_data": {
+    "main_sequence": {
+      "O": {
+        "name": "O Main Sequence Star",
+        "class": "O",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          15,
+          90
+        ],
+        "temperature": [
+          38000, 42000
+        ],
+        "spawn_rate": 0.2
+      },
+      "B": {
+        "name": "B Main Sequence Star",
+        "class": "B",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          2,
+          16
+        ],
+        "temperature": [
+          17000, 23000
+        ],
+        "spawn_rate": 1.8
+      },
+      "A": {
+        "name": "A Main Sequence Star",
+        "class": "A",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          1.4,
+          2.1
+        ],
+        "temperature": [
+          8000, 10000
+        ],
+        "spawn_rate": 6.0
+      },
+      "F": {
+        "name": "F Main Sequence Star",
+        "class": "F",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          1,
+          1.4
+        ],
+        "temperature": [
+          6000, 8000
+        ],
+        "spawn_rate": 12.0
+      },
+      "G": {
+        "name": "G Main Sequence Star",
+        "class": "G",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          0.8,
+          1.2
+        ],
+        "temperature": [
+          5000, 6000
+        ],
+        "spawn_rate": 9.0
+      },
+      "K": {
+        "name": "K Main Sequence Star",
+        "class": "K",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          0.6,
+          0.9
+        ],
+        "temperature": [
+          4000, 5000
+        ],
+        "spawn_rate": 25.0
+      },
+      "M": {
+        "name": "M Main Sequence Star",
+        "class": "M",
+        "type": "main_sequence",
+        "type_name": "Main Sequence Star",
+        "mass": [
+          0.4,
+          0.5
+        ],
+        "temperature": [
+          2500, 3500
+        ],
+        "spawn_rate": 46.0
+      }
+    },
+    "giant": {
+      "B": {
+        "name": "B Blue-White Supergiant",
+        "class": "B",
+        "type": "giant",
+        "type_name": "Supergiant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 1.7
+      },
+      "A": {
+        "name": "A Blue-White Supergiant",
+        "class": "A",
+        "type": "giant",
+        "type_name": "Supergiant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 9.2
+      },
+      "F": {
+        "name": "F White Supergiant",
+        "class": "F",
+        "type": "giant",
+        "type_name": "Supergiant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 2.1
+      },
+      "G": {
+        "name": "G Yellow Supergiant",
+        "class": "G",
+        "type": "giant",
+        "type_name": "Supergiant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 1.6
+      },
+      "K": {
+        "name": "K Orange Giant",
+        "class": "K",
+        "type": "giant",
+        "type_name": "Giant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 20.0
+      },
+      "Mg": {
+        "name": "M Red Giant",
+        "class": "Mg",
+        "type": "giant",
+        "type_name": "Giant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 64.0
+      },
+      "Ms": {
+        "name": "M Red Supergiant",
+        "class": "Ms",
+        "type": "giant",
+        "type_name": "Supergiant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 1.4
+      }
+    },
+    "white_dwarf": {
+      "D": {
+        "name": "White Dwarf",
+        "class": "D",
+        "type": "white_dwarf",
+        "type_name": "White Dwarf",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 100.0
+      }
+    },
+    "brown_dwarf": {
+      "L": {
+        "name": "L Brown Dwarf",
+        "class": "L",
+        "type": "brown_dwarf",
+        "type_name": "Brown Giant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 58.0
+      },
+      "T": {
+        "name": "T Brown Dwarf",
+        "class": "T",
+        "type": "brown_dwarf",
+        "type_name": "Brown Giant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 27.0
+      },
+      "Y": {
+        "name": "Y Brown Dwarf",
+        "class": "Y",
+        "type": "brown_dwarf",
+        "type_name": "Brown Giant",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 15.0
+      }
+    },
+    "neutron": {
+      "ns": {
+        "name": "Neutron Star",
+        "class": "n/a",
+        "type": "neutron",
+        "type_name": "Neutron Star",
+        "mass": [
+          10,
+          30
+        ],
+        "spawn_rate": 100.0
+      }
+    },
+    "black_hole": {
+      "bh": {
+        "name": "Black Hole",
+        "class": "n/a",
+        "type": "black_hole",
+        "type_name": "Black Hole",
+        "mass": [
+          10,
+          1000
+        ],
+        "spawn_rate": 98.0
+      },
+      "smbh": {
+        "name": "Supermassive Black Hole",
+        "class": "n/a",
+        "type": "black_hole",
+        "type_name": "Black Hole",
+        "mass": [
+          1000,
+          100000
+        ],
+        "spawn_rate": 2.0
+      }
+    }
+  }
+}
