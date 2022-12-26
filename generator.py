@@ -14,7 +14,7 @@ from physics_calculator import Calculate, Constants
 # https://www.astronomy.ohio-state.edu/ryden.1/ast162_2/notes8.html
 
 class Planet:
-    def __init__(self,type,_class,type_name,mass,density,gravity,g,radius,atmospheric_data,has_ring,spawn_chance):
+    def __init__(self,type,_class,type_name,mass,density,gravity,g,radius,atmospheric_data,has_ring,seed,spawn_chance):
         self.type = type
         self._class = _class
         self.type_name = type_name
@@ -25,6 +25,19 @@ class Planet:
         self.radius = radius
         self.atmospheric_data = atmospheric_data
         self.has_ring = has_ring
+        self.seed = seed
+        self.spawn_chance = spawn_chance
+
+class Star:
+    def __init__(self, name,_class,type,type_name,mass_solar,mass_kg,temperature,seed,spawn_chance):
+        self.name = name
+        self._class = _class
+        self.type = type
+        self.type_name = type_name
+        self.mass_solar = mass_solar
+        self.mass_kg = mass_kg
+        self.temperature = temperature
+        self.seed = seed
         self.spawn_chance = spawn_chance
 
 
@@ -33,42 +46,42 @@ class Generator:
         self.Calculate = Calculate()
         self.Constants = Constants()
 
-    def generate_star(self, static_stellar_data, seed, stellar_meta_data, stellar_type=None, stellar_class=None):
+    def generate_star(self, static_stellar_data, stellar_meta_data, seed, stellar_type=None, stellar_class=None):
         class_weights_list = []
 
         generated_star = {}
         decorated_star = {}
-        completed_star = {}
-        print(seed)
+        completed_star_object = None
+
         random.seed(seed)
 
         if stellar_type is None and stellar_class is None:
             # get stellar_type based on spawn rate
             stellar_type = random.choices(
-                list(static_planetary_data.keys()),
-                weights=planetary_meta_data['spawn_rate_weights'])
+                list(static_stellar_data.keys()),
+                weights=stellar_meta_data['spawn_rate_weights'])
 
             # make list of weights based on stellar_type spawn rate
-            for object in static_planetary_data[stellar_type[0]].values():
+            for object in static_stellar_data[stellar_type[0]].values():
                 weight = object['spawn_rate']
                 class_weights_list.append(weight)
 
             # get stellar_class based on stellar_type spawn rate
             stellar_class = random.choices(
-                list(static_planetary_data[stellar_type[0]]),
+                list(static_stellar_data[stellar_type[0]]),
                 weights=class_weights_list)
 
         # if stellar_type is provided but stellar_class is not,
         # generate random planetary body class for the given type
         elif stellar_type is not None and stellar_class is None:
             # make list of weights based on stellar_type spawn rate
-            for object in static_planetary_data[stellar_type].values():
+            for object in static_stellar_data[stellar_type].values():
                 weight = object['spawn_rate']
                 class_weights_list.append(weight)
 
             # get stellar_class based on stellar_type spawn rate
             stellar_class = random.choices(
-                list(static_planetary_data[stellar_type]),
+                list(static_stellar_data[stellar_type]),
                 weights=class_weights_list)
 
         # if both stellar_type and stellar_class are provided,
@@ -91,8 +104,29 @@ class Generator:
         # decorated_star becomes placeholder to recieve randomly generated attributes
         decorated_star = generated_star
 
-        return decorated_star
+        name = generated_star['name']
+        type_name = generated_star['type_name']
 
+        mass = round(random.uniform(generated_star['mass'][0], generated_star['mass'][1]), 1)
+        if 'temperature' in generated_star:
+            temperature = round(random.uniform(generated_star['temperature'][0], generated_star['temperature'][1]), 1)
+        else:
+            temperature = 'n/a'
+
+        mass_kg = mass * self.Constants.solar_mass
+        mass_solar = mass
+
+        # calculate spawn chance
+        stellar_body_index = list(static_stellar_data.keys()).index(stellar_type[0])
+        spawn_chance_type = stellar_meta_data['spawn_rate_weights'][stellar_body_index]
+        spawn_chance_class = generated_star['spawn_rate']
+
+        spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
+
+        # give attributes to star
+        completed_star_object = Star(name,stellar_class,stellar_type,type_name,mass_solar,mass_kg,temperature,seed,spawn_chance)
+
+        return completed_star_object
 
 
 
@@ -104,7 +138,7 @@ class Generator:
         # data flow: generated_planet -> decorated_planet -> completed_planet -> return
         generated_planet = {}
         decorated_planet = {}
-        completed_planet_object = 'None'
+        completed_planet_object = None
 
         # set seed to random
         random.seed(seed)
@@ -184,10 +218,11 @@ class Generator:
         spawn_chance_type = planetary_meta_data['spawn_rate_weights'][planetary_body_index]
         spawn_chance_class = generated_planet['spawn_rate']
 
-        ring_spawn_chance = 1
-
-        if has_atmosphere:
-            ring_spawn_chance = generated_planet['has_ring_chance']
+        # BELOW: maybe use for later
+        # ring_spawn_chance = 0
+        #
+        # if has_atmosphere:
+        #     ring_spawn_chance = generated_planet['has_ring_chance']
 
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
 
@@ -196,7 +231,7 @@ class Generator:
 
         # give attributes to planet
         completed_planet_object = Planet(name, type, type_name, mass, density, gravity, g, radius, atmospheric_data, has_ring,
-                                                   spawn_chance)
+                                                   seed,spawn_chance)
         return completed_planet_object
 
 

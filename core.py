@@ -7,6 +7,7 @@ from serializer import Serializer
 from generator import Generator
 from physics_calculator import Calculate
 from GUT import GUT, COLOR
+from display import display_planet
 os.system("")
 Fore = COLOR.Fore
 Back = COLOR.Back
@@ -37,10 +38,11 @@ class Core:
         self.load_data()
         print('run')
         click = input('[enter] to start generation')
-        object = self.generate_star(10000)
-        print(object)
+        stellar_object = self.generate_star(10000)
+        print(stellar_object)
         universe_data = []
-        gen_range = 5
+        gen_range = 10
+        random.seed(9123)
         print(f'> Generating {gen_range} planetary bodies...')
         for i in range(gen_range):
             seed = random.randint(0, 9999999999)
@@ -48,21 +50,8 @@ class Core:
                 seed,
             )
             universe_data.append(planetary_body)
-            print(f"Type:           {Fore.GREEN()}{planetary_body.type}{Fore.RESET()}")
-            print(f"Class:          {Fore.B_BLUE()}{planetary_body._class}{Fore.RESET()}")
-            print(f"Mass:           {planetary_body.mass} kg")
-            print(f"Density:        {planetary_body.density} kg/L")
-            print(f'Gravity:        {planetary_body.gravity} m/s')
-            print(f'g:              {planetary_body.g} g')
-            print(f"Radius:         {planetary_body.radius} km")
-            print(f"Atmosphere:")
-            for key in planetary_body.atmospheric_data:
-                print(f'  - {Fore.CYAN()}{key}{Fore.RESET()}:  {planetary_body.atmospheric_data[key]}')
-            print(f"Has ring:       {planetary_body.has_ring}")
-            print(f"Spawn Chance:   {planetary_body.spawn_chance}%")
-            print(f"Seed:           ({seed})")
-            print(f'[BYTE SIZE]:    [{(sys.getsizeof(planetary_body))} bytes]')
-            print('\n\n\n')
+            display_planet(planetary_body)
+            print('\n\n')
         print(f'> Successfully generated {gen_range} planetary bodies')
         print(f'[TOTAL SIZE]:    [{(sys.getsizeof(universe_data))/1000} kb]')
         click = input('[enter] to quit')
