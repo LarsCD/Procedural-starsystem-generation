@@ -14,10 +14,11 @@ from physics_calculator import Calculate, Constants
 # https://www.astronomy.ohio-state.edu/ryden.1/ast162_2/notes8.html
 
 class Planet:
-    def __init__(self,type,_class,type_name,mass,density,gravity,g,radius,atmospheric_data,has_ring,seed,spawn_chance):
+    def __init__(self,type,_class,type_name,science_data,mass,density,gravity,g,radius,atmospheric_data,has_ring,seed,spawn_chance):
         self.type = type
         self._class = _class
         self.type_name = type_name
+        self.science_data = science_data
         self.mass = mass
         self.density = density
         self.gravity = gravity
@@ -29,11 +30,12 @@ class Planet:
         self.spawn_chance = spawn_chance
 
 class Star:
-    def __init__(self, name,_class,type,type_name,mass_solar,mass_kg,temperature,seed,spawn_chance):
+    def __init__(self, name,_class,type,type_name,science_data,mass_solar,mass_kg,temperature,seed,spawn_chance):
         self.name = name
         self._class = _class
         self.type = type
         self.type_name = type_name
+        self.science_data = science_data
         self.mass_solar = mass_solar
         self.mass_kg = mass_kg
         self.temperature = temperature
@@ -122,9 +124,11 @@ class Generator:
         spawn_chance_class = generated_star['spawn_rate']
 
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
+        science_data = round(1 / ((spawn_chance / 10) / 2) * 100) + random.randint(round(-(1 / spawn_chance * 100)),
+                                                                                    round((1 / spawn_chance * 100)))
 
         # give attributes to star
-        completed_star_object = Star(name,stellar_class,stellar_type,type_name,mass_solar,mass_kg,temperature,seed,spawn_chance)
+        completed_star_object = Star(name,stellar_class,stellar_type,type_name,science_data,mass_solar,mass_kg,temperature,seed,spawn_chance)
 
         return completed_star_object
 
@@ -224,13 +228,16 @@ class Generator:
         # if has_atmosphere:
         #     ring_spawn_chance = generated_planet['has_ring_chance']
 
+
+
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
+        science_data = round(1/(spawn_chance/10)*100)+random.randint(round(-(1/spawn_chance*100)), round((1/spawn_chance*100)))
 
         # generate atmosphere data (temperature = 293 K)
         atmospheric_data = self.generate_atmospheric_data(static_atmosphere_data, radius, mass, type, gravity, has_atmosphere, seed)
 
         # give attributes to planet
-        completed_planet_object = Planet(name, type, type_name, mass, density, gravity, g, radius, atmospheric_data, has_ring,
+        completed_planet_object = Planet(name, type, type_name, science_data, mass, density, gravity, g, radius, atmospheric_data, has_ring,
                                                    seed,spawn_chance)
         return completed_planet_object
 

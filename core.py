@@ -7,7 +7,7 @@ from serializer import Serializer
 from generator import Generator
 from physics_calculator import Calculate
 from GUT import GUT, COLOR
-from display import display_planet
+from display import Display
 os.system("")
 Fore = COLOR.Fore
 Back = COLOR.Back
@@ -38,19 +38,18 @@ class Core:
         self.load_data()
         print('run')
         click = input('[enter] to start generation')
-        stellar_object = self.generate_star(10000)
-        print(stellar_object)
+
         universe_data = []
-        gen_range = 10
-        random.seed(9123)
+        gen_range = 100
         print(f'> Generating {gen_range} planetary bodies...')
         for i in range(gen_range):
             seed = random.randint(0, 9999999999)
-            planetary_body = self.generate_planetary_body(
-                seed,
-            )
-            universe_data.append(planetary_body)
-            display_planet(planetary_body)
+            stellar_object = self.generate_star(seed)
+            Display.display_star(stellar_object)
+            # planetary_body = self.generate_planetary_body(seed)
+            # universe_data.append(stellar_object)
+            # universe_data.append(planetary_body)
+            # Display.display_planet(planetary_body)
             print('\n\n')
         print(f'> Successfully generated {gen_range} planetary bodies')
         print(f'[TOTAL SIZE]:    [{(sys.getsizeof(universe_data))/1000} kb]')
