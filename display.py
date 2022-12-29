@@ -14,7 +14,7 @@ class Display:
             composition = 'n/a'
         else:
             for i, compound in enumerate(atmosphere['atmospheric_composition'][0]):
-                string = f'{Fore.YELLOW()}{compound}{Fore.RESET()} ({round(atmosphere["atmospheric_composition"][1][compound], 3)}%),'
+                string = f'{Fore.YELLOW()}{compound}{Fore.RESET()}: {round(atmosphere["atmospheric_composition"][1][compound], 3)}%'
                 composition.append(string)
 
         print('---------------------------------------------------')
@@ -43,8 +43,8 @@ class Display:
             else:
                 print(f'    └ {compound}')
         print('')
-        print(f"Seed:           ({planetary_body.seed})")
-        print(f'[DATA SIZE]:    [{(sys.getsizeof(planetary_body))} bytes]')
+        print(f"Seed:           {planetary_body.seed}")
+        print(f'[DATA SIZE]:    {(sys.getsizeof(planetary_body))} bytes')
 
 
     def display_star(object):
@@ -58,5 +58,5 @@ class Display:
         print(f"Mass:           {round(object.mass_solar, 2)} ☉")
         print(f"Temperature:    {object.temperature} K")
         print('')
-        print(f"Seed:           ({object.seed})")
-        print(f'[DATA SIZE]:    [{(sys.getsizeof(object))} bytes]')
+        print(f"Seed:           {object.seed}")
+        print(f'[DATA SIZE]:    {(sys.getsizeof(object))} bytes')

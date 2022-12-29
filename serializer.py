@@ -55,3 +55,16 @@ class Serializer:
         else:
             print(f'> Successfully loaded stellar_data from \'{filename}\'')
         return data
+    
+
+    def load_starsystem_config(self, filename):
+        data = None
+        print(f'> Loading starsystem_config from \'{filename}\'')
+        try:
+            with open(filename, 'r') as file:
+                data = json.load(file)
+        except Exception:
+            print(f'> ERROR: Failure loading starsystem_config from \'{filename}\'\n> {traceback.print_exc()}')
+        else:
+            print(f'> Successfully loaded starsystem_config from \'{filename}\'')
+        return data

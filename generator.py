@@ -14,7 +14,7 @@ from physics_calculator import Calculate, Constants
 # https://www.astronomy.ohio-state.edu/ryden.1/ast162_2/notes8.html
 
 class Planet:
-    def __init__(self,type,_class,type_name,science_data,mass,density,gravity,g,radius,atmospheric_data,has_ring,seed,spawn_chance):
+    def __init__(self,type,_class,type_name,science_data,mass,density,gravity,g,radius,atmospheric_data,has_ring,data,seed,spawn_chance):
         self.type = type
         self._class = _class
         self.type_name = type_name
@@ -26,6 +26,8 @@ class Planet:
         self.radius = radius
         self.atmospheric_data = atmospheric_data
         self.has_ring = has_ring
+        self.distance = data['distance']
+        self.orbital_period = data['orbital_period_days']
         self.seed = seed
         self.spawn_chance = spawn_chance
 
@@ -43,17 +45,85 @@ class Star:
         self.spawn_chance = spawn_chance
 
 
+
 class Generator:
     def __init__(self):
         self.Calculate = Calculate()
         self.Constants = Constants()
 
-    def generate_star(self, static_stellar_data, stellar_meta_data, seed, stellar_type=None, stellar_class=None):
+    def generate_system(self, static_starsystem_config, static_stellar_data, static_planetary_data, static_compound_data, stellar_meta_data, planetary_meta_data, seed):
+        random.seed(seed)
+        
+        # vraiables
+        starsystem_stars = [1,2]
+        planet_distance_last = 0.15 # in AU
+
+        star_index = 1      # counts index number of star
+        planet_index = 1    # counts index number of planet
+        combined_stellar_solar_mass = 0
+
+
+        # data attributes
+        system_name = 'placeholder_name'
+        star_list = []
+        planet_list = []
+        starsystem_data = {}
+
+
+        # generate how many bodies
+        star_spawn_rates = static_starsystem_config['star_spawn_weights']
+        star_count = random.choices(starsystem_stars, star_spawn_rates)[0]
+        planet_count = random.randint(3, 12)
+
+
+        # generate extra data for planet 
+        for i in range(star_count):
+            data = {}
+            star_seed = random.randint(0, 999999999999)
+            stellar_object = self.generate_star(static_stellar_data, stellar_meta_data, data, star_seed)
+            star_list.append(stellar_object)
+        
+        # calculate combined stellar mass
+        for star in star_list:
+            combined_stellar_solar_mass += star.mass_solar
+        
+
+
+        # generate extra data for planet 
+        for i in range(planet_count):
+            data = {}
+            planet_seed = random.randint(0, 999999999999)
+            data['distance'] = planet_distance_last*round(random.uniform(1.2, 1.7), 1)
+            planet_distance_last = data['distance']
+            data['orbital_period_days'] = self.Constants.earth_day_seconds/(self.Calculate.orbital_time(data['distance'], combined_stellar_solar_mass))
+
+
+            planetary_object = self.generate_planet(static_planetary_data, static_compound_data, planetary_meta_data, data, planet_seed)
+
+            planet_list.append(planetary_object)
+
+        starsystem_data['stars'] = star_list
+        starsystem_data['planets'] = planet_list
+        starsystem_data['system_populated'] = bool(random.getrandbits(1))
+        starsystem_data['system_discovered'] = False
+        starsystem_data['system_seed'] = seed
+        starsystem_data['total_solar_mass'] = combined_stellar_solar_mass
+        starsystem_data['star_count'] = len(star_list)
+        starsystem_data['planet_count'] = len(planet_list)
+
+        return starsystem_data
+
+
+
+
+    def generate_star(self, stellar_data, meta_data, data, seed, stellar_type=None, stellar_class=None):
         class_weights_list = []
 
         generated_star = {}
         decorated_star = {}
         completed_star_object = None
+        static_stellar_data = stellar_data['stellar_data']
+        stellar_meta_data = meta_data
 
         random.seed(seed)
 
@@ -124,8 +194,8 @@ class Generator:
         spawn_chance_class = generated_star['spawn_rate']
 
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
-        science_data = round(1 / ((spawn_chance / 10) / 2) * 100) + random.randint(round(-(1 / spawn_chance * 100)),
-                                                                                    round((1 / spawn_chance * 100)))
+        science_data = round(1 / ((spawn_chance / 10) / 4) * 100) + random.randint(round(-(1 / spawn_chance * 200)),
+                                                                                    round((1 / spawn_chance * 200)))
 
         # give attributes to star
         completed_star_object = Star(name,stellar_class,stellar_type,type_name,science_data,mass_solar,mass_kg,temperature,seed,spawn_chance)
@@ -133,9 +203,7 @@ class Generator:
         return completed_star_object
 
 
-
-
-    def generate_planet(self, static_planetary_data, static_atmosphere_data, planetary_meta_data, seed, planetary_body_type=None, planetary_body_class=None):
+    def generate_planet(self, planetary_data, static_compound_data, planetary_meta_data, data, seed, planetary_body_type=None, planetary_body_class=None):
         # variables
         class_weights_list = []
 
@@ -143,6 +211,7 @@ class Generator:
         generated_planet = {}
         decorated_planet = {}
         completed_planet_object = None
+        static_planetary_data = planetary_data['planetary_data']
 
         # set seed to random
         random.seed(seed)
@@ -228,17 +297,15 @@ class Generator:
         # if has_atmosphere:
         #     ring_spawn_chance = generated_planet['has_ring_chance']
 
-
-
         spawn_chance = round((((spawn_chance_type / 100) / (1 / spawn_chance_class))), 3)
         science_data = round(1/(spawn_chance/10)*100)+random.randint(round(-(1/spawn_chance*100)), round((1/spawn_chance*100)))
 
         # generate atmosphere data (temperature = 293 K)
-        atmospheric_data = self.generate_atmospheric_data(static_atmosphere_data, radius, mass, type, gravity, has_atmosphere, seed)
+        atmospheric_data = self.generate_atmospheric_data(static_compound_data, radius, mass, type, gravity, has_atmosphere, seed)
 
         # give attributes to planet
         completed_planet_object = Planet(name, type, type_name, science_data, mass, density, gravity, g, radius, atmospheric_data, has_ring,
-                                                   seed,spawn_chance)
+                                                   data, seed,spawn_chance)
         return completed_planet_object
 
 
@@ -286,7 +353,10 @@ class Generator:
                 # Calculate the difference between 100 and the current total percentage
                 difference = 100 - total_percentage
                 # Assign the difference to the last element in the compound_list
-                atmospheric_compounds_percentages[compound_list[-1]] += round(difference, 2)
+                if percentage < 0.001:
+                    pass
+                else:
+                    atmospheric_compounds_percentages[compound_list[-1]] += round(difference, 2)
             # Check if the sum of the percentages is more than 100
             elif total_percentage > 100:
                 # Calculate the difference between the current total percentage and 100
@@ -299,8 +369,9 @@ class Generator:
                 atmospheric_compounds_atomic_weights[key] = static_compounds[key]
 
             # add percentage dict and atomic weight list to atmospheric_composition
-            atmosphere_composition.append(atmospheric_compounds_percentages)
+            sorted(atmospheric_compounds_percentages.items(), key=lambda x: x[1], reverse=True)
             atmosphere_composition.append(atmospheric_compounds_atomic_weights)
+            atmosphere_composition.append(atmospheric_compounds_percentages)
 
             # Return atmospheric_composition dictionary
             return atmosphere_composition
@@ -361,8 +432,4 @@ class Generator:
             'atmospheric_pressure_hPa': atmospheric_pressure_hPa,
         }
         return complete_atmospheric_data
-
-
-
-
 

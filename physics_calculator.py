@@ -10,6 +10,7 @@ class Constants:
         self.AU = 149_597_871           # km
         self.earth_mass = 5.97219e24    # kg
         self.solar_mass = 1.9891e30     # kg
+        self.earth_day_seconds = 86_160 # s
 
 class Calculate:
     def __init__(self):
@@ -44,7 +45,20 @@ class Calculate:
         pressure = (g * M) / (R * T)  # in Pa
         return pressure
 
-    def km_to_au(self, distance_km):
+    def km_to_au(self, distance_km): # conversion
         distance_au = self.Constants.AU/distance_km
         return distance_au
+
+    def orbital_time(self, radius_km, star_solar_mass): # kepler
+        G = self.Constants.G
+        m = star_solar_mass*self.Constants.solar_mass # kg
+        r = radius_km *1000 # m
+        # v = math.sqrt((G*m)/r) # m/s
+        T = 2*math.pi*math.sqrt(r**3/(G/m))
+        return T
+
+
+
+
+
 
