@@ -18,6 +18,7 @@ class Display:
                 composition.append(string)
 
         print('---------------------------------------------------')
+        print(f"ID:             {Fore.GREEN()}{planetary_body.id}{Fore.RESET()}")
         print(f"Type:           {Fore.GREEN()}{planetary_body.type}{Fore.RESET()}")
         print(f'Science value:  {Fore.B_BLUE()}{object.science_data}{Fore.RESET()} Σ')
         print(f"Class:          {Fore.B_BLUE()}{planetary_body.type_name}{Fore.RESET()}")
@@ -49,6 +50,7 @@ class Display:
 
     def display_star(object):
         print('---------------------------------------------------')
+        print(f"ID:             {Fore.GREEN()}{object.id}{Fore.RESET()}")
         print(f'Star:           {Fore.GREEN()}{object.name}{Fore.RESET()}')
         print(f'Science value:  {Fore.B_BLUE()}{object.science_data}{Fore.RESET()} Σ')
         print(f"Type:           {Fore.B_BLUE()}{object.type_name}{Fore.RESET()}")
@@ -60,3 +62,10 @@ class Display:
         print('')
         print(f"Seed:           {object.seed}")
         print(f'[DATA SIZE]:    {(sys.getsizeof(object))} bytes')
+
+
+    def display_system(self, starsystem_data):
+        star_count = starsystem_data['star_count']
+        planet_count = starsystem_data['planet_count']
+
+

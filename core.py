@@ -41,7 +41,7 @@ class Core:
         print('run')
         universe = []
         seed = random.randint(0, 999999999)
-        seed = 55176457
+        # seed = 55176457
         starsystem = self.Generator.generate_system(
             self.static_starsystem_config,
             self.static_stellar_data,
@@ -54,6 +54,10 @@ class Core:
         for key in starsystem:
             print(f'{key}:  {starsystem[key]}')
         universe.append(starsystem)
+
+        # for i in range(0, 100):
+        #     name = self.Generator.system_name_generator(i+13)
+        #     print(name)
 
         # print(starsystem)
         print('=============================================================================')

@@ -25,7 +25,7 @@ ________________________________________________________________________________
  [{b}INFO{rs}]
  SYSTEM NAME: {b}J91-AB{rs}
  STARS: {g}1{rs}
- BODIES: {g}7{rs}
+ PLANETS: {g}7{rs}
 
  [SELECT BODY]
  - [{g}1{rs}]: {b}???{rs}

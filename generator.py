@@ -16,6 +16,7 @@ from physics_calculator import Calculate, Constants
 class Planet:
     def __init__(self,type,_class,type_name,science_data,mass,density,gravity,g,radius,atmospheric_data,has_ring,data,seed,spawn_chance):
         self.type = type
+        self.id = data['id']
         self._class = _class
         self.type_name = type_name
         self.science_data = science_data
@@ -32,8 +33,9 @@ class Planet:
         self.spawn_chance = spawn_chance
 
 class Star:
-    def __init__(self, name,_class,type,type_name,science_data,mass_solar,mass_kg,temperature,seed,spawn_chance):
+    def __init__(self, name,_class,type,type_name,science_data,mass_solar,mass_kg,temperature,data,seed,spawn_chance):
         self.name = name
+        self.id = data['id']
         self._class = _class
         self.type = type
         self.type_name = type_name
@@ -50,21 +52,26 @@ class Generator:
     def __init__(self):
         self.Calculate = Calculate()
         self.Constants = Constants()
+        self.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+        self.consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z']
+        self.vowels = ['A', 'E', 'I', 'O', 'U']
+
 
     def generate_system(self, static_starsystem_config, static_stellar_data, static_planetary_data, static_compound_data, stellar_meta_data, planetary_meta_data, seed):
         random.seed(seed)
         
-        # vraiables
+        # variables
         starsystem_stars = [1,2]
         planet_distance_last = 0.15 # in AU
 
         star_index = 1      # counts index number of star
         planet_index = 1    # counts index number of planet
         combined_stellar_solar_mass = 0
+        furtherst_planet
 
 
         # data attributes
-        system_name = 'placeholder_name'
+        system_name = 'PLACEHOLDER-SYSTEM-NAME'
         star_list = []
         planet_list = []
         starsystem_data = {}
@@ -72,17 +79,21 @@ class Generator:
 
         # generate how many bodies
         star_spawn_rates = static_starsystem_config['star_spawn_weights']
+        starsystem_data['name'] = self.system_name_generator(seed)
         star_count = random.choices(starsystem_stars, star_spawn_rates)[0]
         planet_count = random.randint(3, 12)
 
 
-        # generate extra data for planet 
+        # generate extra data for star
         for i in range(star_count):
             data = {}
+            data['class_index'] = i
+            data['id'] = self.ID_generator_star(starsystem_data, data)
             star_seed = random.randint(0, 999999999999)
             stellar_object = self.generate_star(static_stellar_data, stellar_meta_data, data, star_seed)
             star_list.append(stellar_object)
-        
+
+
         # calculate combined stellar mass
         for star in star_list:
             combined_stellar_solar_mass += star.mass_solar
@@ -93,6 +104,8 @@ class Generator:
         for i in range(planet_count):
             data = {}
             planet_seed = random.randint(0, 999999999999)
+            data['class_index'] = int(i)
+            data['id'] = self.ID_generator_planet(starsystem_data, data)
             data['distance'] = planet_distance_last*round(random.uniform(1.2, 1.7), 1)
             planet_distance_last = data['distance']
             data['orbital_period_days'] = self.Constants.earth_day_seconds/(self.Calculate.orbital_time(data['distance'], combined_stellar_solar_mass))
@@ -102,6 +115,8 @@ class Generator:
 
             planet_list.append(planetary_object)
 
+
+        # starsystem_data['system_id'] =
         starsystem_data['stars'] = star_list
         starsystem_data['planets'] = planet_list
         starsystem_data['system_populated'] = bool(random.getrandbits(1))
@@ -112,8 +127,6 @@ class Generator:
         starsystem_data['planet_count'] = len(planet_list)
 
         return starsystem_data
-
-
 
 
     def generate_star(self, stellar_data, meta_data, data, seed, stellar_type=None, stellar_class=None):
@@ -198,7 +211,7 @@ class Generator:
                                                                                     round((1 / spawn_chance * 200)))
 
         # give attributes to star
-        completed_star_object = Star(name,stellar_class,stellar_type,type_name,science_data,mass_solar,mass_kg,temperature,seed,spawn_chance)
+        completed_star_object = Star(name,stellar_class,stellar_type,type_name,science_data,mass_solar,mass_kg,temperature,data,seed,spawn_chance)
 
         return completed_star_object
 
@@ -432,4 +445,28 @@ class Generator:
             'atmospheric_pressure_hPa': atmospheric_pressure_hPa,
         }
         return complete_atmospheric_data
+
+
+    def ID_generator_planet(self, system_data, planet_data):
+        id = system_data['name'] + ' ' + str(planet_data['class_index'] + 1)
+        return id
+
+    def ID_generator_star(self, system_data, star_data):
+        suffix = self.alphabet[star_data['class_index']]
+        id = system_data['name'] + ' ' + suffix
+        return id
+
+    def system_name_generator(self, system_seed):
+        random.seed(system_seed)
+        name = ''
+        nr_letters = random.randint(3, 10)
+        for i in range(nr_letters):
+            rand = random.randint(0, 1)
+            if rand:
+                name = name + self.vowels[random.randint(0, (len(self.vowels)-1))]
+            else:
+                name = name + self.consonants[random.randint(0, (len(self.consonants) - 1))]
+        name = name.capitalize()
+        return name
+
 
