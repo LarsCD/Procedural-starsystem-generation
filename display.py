@@ -64,8 +64,28 @@ class Display:
         print(f'[DATA SIZE]:    {(sys.getsizeof(object))} bytes')
 
 
-    def display_system(self, starsystem_data):
+    def display_system(starsystem_data, config_data):
+        window_width = config_data['window_width']
         star_count = starsystem_data['star_count']
         planet_count = starsystem_data['planet_count']
+        furthest_point = starsystem_data['furthest_point']
+        scale_factor = int(round(((window_width-8-(planet_count))/planet_count)))
+        i = 1
+        distance_graphic = ''
+        number_graphic = ''
+        for planet in starsystem_data['planets']:
+            # scale_distance_planet = int(round(planet.distance * scale_factor))
+            distance_graphic = distance_graphic + ('-'*scale_factor) + f'{Fore.B_BLUE()}●{Fore.RESET()}'
+            number_graphic = number_graphic + (' '*(scale_factor-2)) + f'[{Fore.B_GREEN()}{i}{Fore.RESET()}]'
+            i += 1
+        distance_graphic = f' {Fore.B_YELLOW()}){Fore.RESET()} ' + distance_graphic + '---'
+        number_graphic = '   ' + number_graphic + '   '
+
+        print('---------------------------------------------------')
+        print('System name:', (f'{Fore.B_BLUE()}{starsystem_data["name"]}{Fore.RESET()}\n'))
+        print(distance_graphic)
+        print(number_graphic)
+        print('\n'*3)
+
 
 

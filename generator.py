@@ -55,6 +55,7 @@ class Generator:
         self.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         self.consonants = ['B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z']
         self.vowels = ['A', 'E', 'I', 'O', 'U']
+        self.suffix = ['Prime', 'Ultimate', 'Convax', 'Sector', 'I', 'II', 'III', 'IV', 'V']
 
 
     def generate_system(self, static_starsystem_config, static_stellar_data, static_planetary_data, static_compound_data, stellar_meta_data, planetary_meta_data, seed):
@@ -67,7 +68,7 @@ class Generator:
         star_index = 1      # counts index number of star
         planet_index = 1    # counts index number of planet
         combined_stellar_solar_mass = 0
-        furtherst_planet
+        furtherst_planet = 0
 
 
         # data attributes
@@ -81,7 +82,7 @@ class Generator:
         star_spawn_rates = static_starsystem_config['star_spawn_weights']
         starsystem_data['name'] = self.system_name_generator(seed)
         star_count = random.choices(starsystem_stars, star_spawn_rates)[0]
-        planet_count = random.randint(3, 12)
+        planet_count = random.randint(3, 14)
 
 
         # generate extra data for star
@@ -106,14 +107,16 @@ class Generator:
             planet_seed = random.randint(0, 999999999999)
             data['class_index'] = int(i)
             data['id'] = self.ID_generator_planet(starsystem_data, data)
-            data['distance'] = planet_distance_last*round(random.uniform(1.2, 1.7), 1)
+            data['distance'] = planet_distance_last*round(random.uniform(1.4, 2.0), 1)
             planet_distance_last = data['distance']
-            data['orbital_period_days'] = self.Constants.earth_day_seconds/(self.Calculate.orbital_time(data['distance'], combined_stellar_solar_mass))
+            distance_km = data['distance'] * self.Constants.AU
+            data['orbital_period_days'] = (self.Calculate.orbital_time(distance_km, combined_stellar_solar_mass))/self.Constants.earth_day_seconds
 
 
             planetary_object = self.generate_planet(static_planetary_data, static_compound_data, planetary_meta_data, data, planet_seed)
 
             planet_list.append(planetary_object)
+        furtherst_planet = planet_list[-1].distance
 
 
         # starsystem_data['system_id'] =
@@ -125,6 +128,7 @@ class Generator:
         starsystem_data['total_solar_mass'] = combined_stellar_solar_mass
         starsystem_data['star_count'] = len(star_list)
         starsystem_data['planet_count'] = len(planet_list)
+        starsystem_data['furthest_point'] = furtherst_planet
 
         return starsystem_data
 
@@ -467,6 +471,9 @@ class Generator:
             else:
                 name = name + self.consonants[random.randint(0, (len(self.consonants) - 1))]
         name = name.capitalize()
+        rand = random.randint(0, 10)
+        if rand > 6:
+            name = name + ' ' + self.suffix[random.randint(0, (len(self.suffix))-1)]
         return name
 
 

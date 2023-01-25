@@ -54,7 +54,7 @@ class Calculate:
         m = star_solar_mass*self.Constants.solar_mass # kg
         r = radius_km *1000 # m
         # v = math.sqrt((G*m)/r) # m/s
-        T = 2*math.pi*math.sqrt(r**3/(G/m))
+        T = math.sqrt((4*(math.pi**2)*(r**3))/(G*m))
         return T
 
 

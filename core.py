@@ -27,6 +27,7 @@ class Core:
 
 
     def load_data(self):
+        self.config_data = self.Serializer.load_config()
         self.static_planet_data = self.Serializer.load_planet_data(self.planet_data_filename)
         self.static_compound_data = self.Serializer.load_compound_data(self.compound_data_filename)
         self.static_stellar_data = self.Serializer.load_stellar_data(self.stellar_data_filename)
@@ -40,28 +41,39 @@ class Core:
         self.load_data()
         print('run')
         universe = []
-        seed = random.randint(0, 999999999)
-        # seed = 55176457
-        starsystem = self.Generator.generate_system(
-            self.static_starsystem_config,
-            self.static_stellar_data,
-            self.static_planet_data,
-            self.static_compound_data,
-            self.stellar_meta_data,
-            self.planetary_meta_data,
-            seed
-        )
-        for key in starsystem:
-            print(f'{key}:  {starsystem[key]}')
-        universe.append(starsystem)
+        while True:
+            seed = random.randint(0, 999999999)
+            # seed = 55176457
+            starsystem = self.Generator.generate_system(
+                self.static_starsystem_config,
+                self.static_stellar_data,
+                self.static_planet_data,
+                self.static_compound_data,
+                self.stellar_meta_data,
+                self.planetary_meta_data,
+                seed
+            )
+            for key in starsystem:
+                print(f'{key}:  {starsystem[key]}')
+            universe.append(starsystem)
+            Display.display_system(starsystem, self.config_data)
+            for star in starsystem['stars']:
+                Display.display_star(star)
+                print('\n\n\n')
 
-        # for i in range(0, 100):
-        #     name = self.Generator.system_name_generator(i+13)
-        #     print(name)
+            for planet in starsystem['planets']:
+                Display.display_planet(planet)
+                print('\n\n\n')
 
-        # print(starsystem)
-        print('=============================================================================')
-        click = input('exit')
+            # for i in range(0, 100):
+            #     name = self.Generator.system_name_generator(i+13)
+            #     print(name)
+
+            # print(starsystem)
+            print('=============================================================================')
+
+            click = input('exit')
+            print('\n'*100)
 
         
 
