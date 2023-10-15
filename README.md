@@ -3,7 +3,7 @@ In this project I explored the procedrual generation of starsystems
 # Functionality:
 
 ## Generate planet
-  Generate type of planet based on occurance in the real universe.
+  Generate type of planet based on occurance in the real universe.\n
   From radius and planet composittion; generate mass, gravity at surface, and more.
   Further generate atmospheric composition-, pressure- and other atmospheric data.
   
