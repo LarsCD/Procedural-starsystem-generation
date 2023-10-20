@@ -1,3 +1,4 @@
+# About
 In this project I explored the procedrual generation of starsystems
 
 # Functionality
