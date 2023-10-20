@@ -1,6 +1,6 @@
 In this project I explored the procedrual generation of starsystems
 
-# Functionality:
+# Functionality
 
 ## Generate planet
   - Generate type of planet based on occurance in the real universe.
